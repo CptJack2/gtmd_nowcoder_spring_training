@@ -15,30 +15,71 @@
  输出例子1:
 9
  */
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 using  namespace std;
-int factorial(int n){
-    if(n==0)return 1;
-    int f=1;
-    for(int i=1;i<=n;++i)f*=i;
-    return f;
+const int mod = 1000000007;
+long long exp_mod(long long a, long long b, long long p)
+{
+    long long res = 1;
+    while(b != 0)
+    {
+        if(b&1) res = (res * a) % p;
+        a = (a*a) % p;
+        b >>= 1;
+    }
+    return res;
 }
-int combination(int M,int N){
-    return factorial(M)/(factorial(N)*factorial(M-N));
+
+long long Comb(long long a, long long b, long long p)
+{
+    if(a < b)   return 0;
+    if(a == b)  return 1;
+    if(b > a - b)   b = a - b;
+
+    long long ans = 1, ca = 1, cb = 1;
+    for(long long i = 0; i < b; ++i)
+    {
+        ca = (ca * (a - i))%p;
+        cb = (cb * (b - i))%p;
+    }
+    ans = (ca*exp_mod(cb, p - 2, p)) % p;
+    return ans;
+}
+
+long long Lucas(int n, int m, int p)
+{
+    long long ans = 1;
+
+    while(n&&m&&ans)
+    {
+        ans = (ans*Comb(n%p, m%p, p)) % p;
+        n /= p;
+        m /= p;
+    }
+    return ans;
 }
 int main(){
     int K,A,B,X,Y;
-    cin>>K>>A>>B>>X>>Y;
+    cin>>K>>A>>X>>B>>Y;
     vector<pair<int,int>> possibleAB;
-    for(int i=0;i<=K/A;++i){
-        int t=(K-i*A)/B;
-        if(i*A+B*t==K)
-            possibleAB.push_back(make_pair(i,t));
+    if(A!=0) {
+        if(B!=0)
+            for (int i = 0; i <= K / A; ++i) {
+                int t=(K - i * A) / B;
+                if (i * A + B * t == K)
+                    possibleAB.push_back(make_pair(i, t));
+            }
+        else
+        if(K%A==0)
+            possibleAB.push_back(make_pair(K/A,0));
     }
+    else
+        if(K%B==0)
+            possibleAB.push_back(make_pair(0,K/B));
     int count=0;
     for(auto p:possibleAB)
-        if(A>=p.first && B>=p.second)
-            count=(count+combination(A,p.first)*combination(B,p.second))%1000000007;
-    cout<<count<<endl;
+        if(X>=p.first && Y>=p.second)
+            count=(count+Lucas(X,p.first,mod)*Lucas(Y,p.second,mod))%mod;
+    cout<<count;
+    return 0;
 }
