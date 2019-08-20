@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.2)
 project(project1)
 set(CMAKE_CXX_STANDARD 11)
+add_definitions("-Wall -g")
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-add_executable(main tx2018autumn1.cpp)
+add_executable(main tx2018autumn2.cpp)
